@@ -10,19 +10,6 @@ import { firstValueFrom, from, fromEvent, of } from 'rxjs';
 })
 export class App {
   constructor() {
-    const users = [
-      { id: '1', name: 'Jack', age: 10 },
-      { id: '2', name: 'Jones', age: 25 },
-      { id: '3', name: 'Rich', age: 35 },
-    ];
-
-    const users$ = of(users);
-    const bodyClick$ = fromEvent(document, 'click');
-
-    firstValueFrom(users$).then((users) => {
-      console.log(users);
-    });
-
     const messagePromise = new Promise((resolve) => {
       setTimeout(() => {
         resolve('promise resolved');
@@ -31,12 +18,10 @@ export class App {
 
     const messages$ = from(messagePromise);
 
-    messages$.subscribe((message) => {
-      console.log(message);
-    });
-
-    bodyClick$.subscribe((event) => {
-      console.log(event);
+    messages$.subscribe({
+      next: (message) => console.log(message),
+      error: (err) => console.log('err', err),
+      complete: () => console.log('its done'),
     });
   }
 }
