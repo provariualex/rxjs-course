@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { firstValueFrom, from, fromEvent, of } from 'rxjs';
+import { firstValueFrom, from, fromEvent, Observable, of } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -10,19 +10,18 @@ import { firstValueFrom, from, fromEvent, of } from 'rxjs';
 })
 export class App {
   constructor() {
-    const messagePromise = new Promise((resolve) => {
-      setTimeout(() => {
-        resolve('promise resolved');
-      }, 1000);
-    });
+    const users = [
+      { id: '1', name: 'Ala', age: 11 },
+      { id: '2', name: 'Dan', age: 22 },
+      { id: '3', name: 'Can', age: 33 },
+    ];
 
-    const messages$ = from(messagePromise);
-
-    messages$.subscribe({
-      next: (message) => console.log(message),
-      error: (err) => console.log('err', err),
-      complete: () => console.log('its done'),
+    const users$ = new Observable((observer) => {
+      users.forEach((user) => {
+        observer.next(user);
+      });
     });
+    users$.subscribe((data) => console.log(data));
   }
 }
 
