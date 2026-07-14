@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { firstValueFrom, from, fromEvent, Observable, of } from 'rxjs';
+import { CustomObserver } from './custom-observers';
 
 @Component({
   selector: 'app-root',
@@ -10,18 +11,8 @@ import { firstValueFrom, from, fromEvent, Observable, of } from 'rxjs';
 })
 export class App {
   constructor() {
-    const users = [
-      { id: '1', name: 'Ala', age: 11 },
-      { id: '2', name: 'Dan', age: 22 },
-      { id: '3', name: 'Can', age: 33 },
-    ];
-
-    const users$ = new Observable((observer) => {
-      users.forEach((user) => {
-        observer.next(user);
-      });
-    });
-    users$.subscribe((data) => console.log(data));
+    const users$ = from([1, 2, 3, 4, 5, 6]);
+    users$.subscribe(new CustomObserver());
   }
 }
 
