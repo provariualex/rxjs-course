@@ -1,6 +1,6 @@
-import { Component, signal } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { from, of } from 'rxjs';
+import { from, fromEvent } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -10,17 +10,33 @@ import { from, of } from 'rxjs';
 })
 export class App {
   constructor() {
-    /** OF create an observable and is sending only once the full array */
-    const numbers$ = of([1, 2, 3, 4, 5]);
-    /** From create an observable and is sending every value from array one by one => stream of data */
-    const otherNumbers$ = from([1, 2, 3, 4, 5]);
+    const users = [
+      { id: '1', name: 'Jack', age: 10 },
+      { id: '2', name: 'Jones', age: 25 },
+      { id: '3', name: 'Rich', age: 35 },
+    ];
 
-    numbers$.subscribe((data) => {
-      console.log(data);
+    const users$ = from(users);
+    const bodyClick$ = fromEvent(document, 'click');
+
+    users$.subscribe((user) => {
+      console.log(user);
     });
 
-    otherNumbers$.subscribe((data) => {
-      console.log(data);
+    const messagePromise = new Promise((resolve) => {
+      setTimeout(() => {
+        resolve('promise resolved');
+      }, 1000);
+    });
+
+    const messages$ = from(messagePromise);
+
+    messages$.subscribe((message) => {
+      console.log(message);
+    });
+
+    bodyClick$.subscribe((event) => {
+      console.log(event);
     });
   }
 }
