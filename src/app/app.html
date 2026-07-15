@@ -1,3 +1,7 @@
 <h1>Rxjs</h1>
 
+@for (comment of comments; track $index) {
+  <div>{{ comment.body }}</div>
+}
+
 <router-outlet />

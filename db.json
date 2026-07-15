@@ -1,0 +1,19 @@
+{
+  "comments": [
+    {
+      "id": "1",
+      "body": "First comment",
+      "username": "Jack"
+    },
+    {
+      "id": "2",
+      "body": "Second comment",
+      "username": "Lady gaga"
+    },
+    {
+      "id": "3",
+      "body": "Third comment",
+      "username": "Jack"
+    }
+  ]
+}

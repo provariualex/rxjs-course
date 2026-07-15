@@ -1,6 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { filter, map, Observable, of } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+
+interface Comment {
+  id: string;
+  body: string;
+  username: string;
+}
 
 @Component({
   selector: 'app-root',
@@ -9,25 +15,12 @@ import { filter, map, Observable, of } from 'rxjs';
   styleUrl: './app.scss',
 })
 export class App {
-  constructor() {
-    const users = [
-      { id: '1', name: 'John', age: 25, isActive: true },
-      { id: '2', name: 'Dan', age: 125, isActive: true },
-      { id: '3', name: 'Mike', age: 45, isActive: true },
-    ];
-    const users$: Observable<any> = new Observable((observer) => {
-      observer.next(users);
-    });
+  http = inject(HttpClient);
+  public comments: Comment[] = [];
 
-    const filteredUsers$ = users$
-      .pipe(
-        filter((users) => {
-          return users.every((user: { isActive: any }) => user.isActive);
-        }),
-        map((users) => {
-          return users.map((user: { name: any }) => user?.name + ' Customer');
-        }),
-      )
-      .subscribe((data) => console.log(data));
+  constructor() {
+    this.http.get<Comment[]>('http://localhost:3004/comments').subscribe((result) => {
+      this.comments = result;
+    });
   }
 }
