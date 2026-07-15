@@ -1,6 +1,6 @@
 import { Component, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { interval, Subscription } from 'rxjs';
+import { interval, Subscription, take } from 'rxjs';
 
 @Component({
   selector: 'app-posts',
@@ -11,15 +11,11 @@ import { interval, Subscription } from 'rxjs';
   standalone: true,
   imports: [CommonModule],
 })
-export class PostsComponent implements OnDestroy {
+export class PostsComponent {
   public interval$ = interval(1000);
-  public intervalSubscription: Subscription;
 
   constructor() {
-    this.intervalSubscription = this.interval$.subscribe((i) => console.log(i));
-  }
-  ngOnDestroy() {
-    this.intervalSubscription.unsubscribe();
+    this.interval$.pipe(take(1)).subscribe((i) => console.log(i));
   }
 }
 
