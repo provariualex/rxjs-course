@@ -1,6 +1,6 @@
 import { Component, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { interval, Subscription, take, takeWhile } from 'rxjs';
+import { interval, Subject, Subscription, take, takeUntil, takeWhile } from 'rxjs';
 
 @Component({
   selector: 'app-posts',
@@ -11,12 +11,18 @@ import { interval, Subscription, take, takeWhile } from 'rxjs';
   standalone: true,
   imports: [CommonModule],
 })
-export class PostsComponent {
+export class PostsComponent implements OnDestroy {
   public interval$ = interval(1000);
+  public unsubscribe$ = new Subject<void>();
 
   constructor() {
-    this.interval$.pipe(takeWhile(i => i < 5)).subscribe((i) => console.log(i));
+    this.interval$.pipe(takeUntil(this.unsubscribe$)).subscribe((i) => console.log(i));
+  }
+
+  ngOnDestroy() {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete()
   }
 }
 
-/** async pipe automatically unsubscribes so ngOnDestroy and .unsubscribe() is not needed if you just use observable in html along with | async */
+/** takeUntil(this.unsubscribe$) is most common used because you can use same subject for all observables to unsubscribe them when the component is destroyed */
