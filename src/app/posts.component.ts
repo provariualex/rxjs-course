@@ -1,7 +1,7 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { interval, Subject, Subscription, take, takeUntil, takeWhile } from 'rxjs';
-import { Unsubscribe } from './unsubscribe';
+import { interval } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-posts',
@@ -12,15 +12,11 @@ import { Unsubscribe } from './unsubscribe';
   standalone: true,
   imports: [CommonModule],
 })
-export class PostsComponent extends Unsubscribe {
-  public interval$ = interval(1000);
+export class PostsComponent {
+  public interval$ = interval(1000).pipe(takeUntilDestroyed());
 
   constructor() {
-    super();
-    this.interval$.pipe(takeUntil(this.unsubscribe$)).subscribe((i) => console.log(i));
-    this.interval$.pipe(takeUntil(this.unsubscribe$)).subscribe((i) => console.log(i));
-    this.interval$.pipe(takeUntil(this.unsubscribe$)).subscribe((i) => console.log(i));
-    this.interval$.pipe(takeUntil(this.unsubscribe$)).subscribe((i) => console.log(i));
+    this.interval$.subscribe((i) => console.log(i));
   }
 }
 
