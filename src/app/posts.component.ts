@@ -1,6 +1,6 @@
 import { Component, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { interval, Subscription, take } from 'rxjs';
+import { interval, Subscription, take, takeWhile } from 'rxjs';
 
 @Component({
   selector: 'app-posts',
@@ -15,9 +15,8 @@ export class PostsComponent {
   public interval$ = interval(1000);
 
   constructor() {
-    this.interval$.pipe(take(1)).subscribe((i) => console.log(i));
+    this.interval$.pipe(takeWhile(i => i < 5)).subscribe((i) => console.log(i));
   }
 }
-
 
 /** async pipe automatically unsubscribes so ngOnDestroy and .unsubscribe() is not needed if you just use observable in html along with | async */
