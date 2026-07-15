@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { firstValueFrom, from, fromEvent, Observable, of } from 'rxjs';
-import { CustomObserver } from './custom-observers';
+import { map, of } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -11,16 +10,21 @@ import { CustomObserver } from './custom-observers';
 })
 export class App {
   constructor() {
-    const users$ = from([1, 2, 3, 4, 5, 6]);
-    users$.subscribe(new CustomObserver());
+    const user = [
+      { id: '1', name: 'John', age: 25 },
+      { id: '2', name: 'Dan', age: 125 },
+      { id: '3', name: 'Mike', age: 45 },
+    ];
+    const users$ = of(user).pipe(
+      map((users) => {
+        return users.map((user) => user.name);
+      }),
+    );
+    users$.subscribe((data) => console.log(data));
   }
 }
 
-/** Difference between Promise and Observables
- *
- *  1 Observable is a stream of data (similar as from()) and Promise is a one time data send (similar as of()), so in observables you can get new values but from promise not
- *  2 Promises are not cancelable but observables yet by using complete
- *  3 Observables has helper methods that can help you to manipulate data rxjs operators meanwhile promises only can use plain javascript
- *  4 Promises are not lazy, without an subscriber an observable will not emit anything at all meanwhile promises are executed no matter what
- *
- * */
+/** there are 2 maps, one is the rxjs operator and other is the javascript map,
+ *  because you get an array of users and want to map each user,
+ *  if ou just wanted to return something else like an empty array,
+ *  the second map would not be necessary. */
