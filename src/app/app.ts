@@ -26,12 +26,20 @@ export class App {
   messagePromise = new Promise((resolve) => {
     setTimeout(() => {
       resolve('promise resolved');
-    }, 5000);
+    }, 1000);
+  });
+
+  foo$ = new Observable((observer) => {
+    observer.next('hahaha');
+    setTimeout(() => {
+      observer.next('test');
+    }, 3000);
   });
 
   data$ = combineLatest({
     users: of(this.users),
     messagePromise: from(this.messagePromise),
+    data: this.foo$,
   });
 
   constructor() {
