@@ -4,6 +4,8 @@ import { HttpClient } from '@angular/common/http';
 import {
   catchError,
   combineLatest,
+  debounce,
+  debounceTime,
   distinct,
   distinctUntilChanged,
   distinctUntilKeyChanged,
@@ -13,7 +15,8 @@ import {
   of,
   withLatestFrom,
 } from 'rxjs';
-import { CommonModule } from '@angular/common';
+
+import { NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
 
 interface Comment {
   id: string;
@@ -23,25 +26,25 @@ interface Comment {
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, CommonModule, RouterLink],
+  imports: [RouterOutlet, ReactiveFormsModule],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })
 export class App {
+  formBuilder = inject(NonNullableFormBuilder);
+  searchForm = this.formBuilder.group({
+    searchValue: '',
+  });
+  onSearchSubmit() {
+    console.log('onSubmit');
+  }
+
   constructor() {
-    const custom$ = new Observable((observer) => {
-      observer.next({ id: '1', name: 'Dan', age: 25 });
-      observer.next({ id: '2', name: 'Dan', age: 25 });
-      observer.next({ id: '3', name: 'Dan', age: 5 });
-      observer.next({ id: '4', name: 'Dan', age: 25 });
-    });
-
-
-    const customPipe$ = custom$
-      // @ts-ignore
-      .pipe(distinctUntilKeyChanged('age'))
-      .subscribe((user) => console.log(user));
+    this.searchForm
+      .get('searchValue')
+      ?.valueChanges.pipe(debounceTime(1000))
+      .subscribe((value) => console.log(value));
   }
 }
 
-/** distinctUntilKeyChanged will reset if the value changes but you can select based on what key, in this case based on age */
+/** debounce, you already know what is doing you like to use it */

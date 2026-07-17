@@ -1,3 +1,5 @@
 <h1>Rxjs</h1>
 
-<router-outlet />
+<form [formGroup]="searchForm" (ngSubmit)="onSearchSubmit()">
+  <input type="text" placeholder="Search" formControlName="searchValue" />
+</form>
