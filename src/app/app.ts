@@ -5,6 +5,7 @@ import {
   catchError,
   combineLatest,
   distinct,
+  distinctUntilChanged,
   forkJoin,
   from,
   Observable,
@@ -26,20 +27,16 @@ interface Comment {
   styleUrl: './app.scss',
 })
 export class App {
-  public users = [
-    { id: '1', name: 'Dan', age: 25, isActive: true },
-    { id: '2', name: 'Ana', age: 25, isActive: true },
-    { id: '3', name: 'Dana', age: 25, isActive: true },
-    { id: '4', name: 'Emma', age: 3.5, isActive: true },
-  ];
-
   constructor() {
-    const user$ = from(this.users)
-      .pipe(distinct((user) => user.age === 25))
-      .subscribe((user) => console.log(user));
+    const custom$ = new Observable((observer) => {
+      observer.next(1);
+      observer.next(2);
+      observer.next(1);
+      observer.next(1);
+    });
+
+    const customPipe$ = custom$.pipe(distinctUntilChanged()).subscribe((user) => console.log(user));
   }
 }
 
-/** distinct() will emit only distinct values, in this case only first user that has age 25 will be emitted,
- *  after that other users that have same age will be skipped,
- * but if user has a different age will be emitted  */
+/** distinctUntilChanged will reset if the value changes */
