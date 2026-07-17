@@ -6,6 +6,7 @@ import {
   combineLatest,
   distinct,
   distinctUntilChanged,
+  distinctUntilKeyChanged,
   forkJoin,
   from,
   Observable,
@@ -29,14 +30,18 @@ interface Comment {
 export class App {
   constructor() {
     const custom$ = new Observable((observer) => {
-      observer.next(1);
-      observer.next(2);
-      observer.next(1);
-      observer.next(1);
+      observer.next({ id: '1', name: 'Dan', age: 25 });
+      observer.next({ id: '2', name: 'Dan', age: 25 });
+      observer.next({ id: '3', name: 'Dan', age: 5 });
+      observer.next({ id: '4', name: 'Dan', age: 25 });
     });
 
-    const customPipe$ = custom$.pipe(distinctUntilChanged()).subscribe((user) => console.log(user));
+
+    const customPipe$ = custom$
+      // @ts-ignore
+      .pipe(distinctUntilKeyChanged('age'))
+      .subscribe((user) => console.log(user));
   }
 }
 
-/** distinctUntilChanged will reset if the value changes */
+/** distinctUntilKeyChanged will reset if the value changes but you can select based on what key, in this case based on age */
