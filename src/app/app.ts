@@ -14,6 +14,7 @@ import {
   interval,
   Observable,
   of,
+  throttleTime,
   timer,
   withLatestFrom,
 } from 'rxjs';
@@ -42,17 +43,14 @@ export class App {
   }
 
   constructor() {
-    interval(1000)
-      .pipe(debounce((val) => timer(val * 200)))
-      .subscribe((value) => {
-        console.log(value);
-      });
 
     this.searchForm
       .get('searchValue')
-      ?.valueChanges.pipe(debounceTime(1000))
+      ?.valueChanges.pipe(throttleTime(1000))
       .subscribe((value) => console.log(value));
   }
 }
 
-/** debounce will actually increase the debounce time until it hits the 1000, im still confused it doesent seems to work fine, but it should stop at 4 because then its hitting the limmit of 1000 */
+/** throttle will block any activity for a period of time
+ *
+ * if you for example set time for 2 seconds you can click a button to call an api once at 2 second at most*/
