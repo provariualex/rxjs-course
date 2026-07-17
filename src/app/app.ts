@@ -11,8 +11,10 @@ import {
   distinctUntilKeyChanged,
   forkJoin,
   from,
+  interval,
   Observable,
   of,
+  timer,
   withLatestFrom,
 } from 'rxjs';
 
@@ -40,6 +42,12 @@ export class App {
   }
 
   constructor() {
+    interval(1000)
+      .pipe(debounce((val) => timer(val * 200)))
+      .subscribe((value) => {
+        console.log(value);
+      });
+
     this.searchForm
       .get('searchValue')
       ?.valueChanges.pipe(debounceTime(1000))
@@ -47,4 +55,4 @@ export class App {
   }
 }
 
-/** debounce, you already know what is doing you like to use it */
+/** debounce will actually increase the debounce time until it hits the 1000, im still confused it doesent seems to work fine, but it should stop at 4 because then its hitting the limmit of 1000 */
