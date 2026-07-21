@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { Subject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 
 import { CommonModule } from '@angular/common';
 
@@ -24,17 +24,20 @@ interface User {
   styleUrl: './app.scss',
 })
 export class App {
-  subject$ = new Subject<User[]>();
+  subject$ = new BehaviorSubject<User[]>([]);
   constructor() {
     this.subject$.subscribe((users) => {
       console.log(users);
     });
 
     this.subject$.next([{ id: '1', name: 'MyUser', age: 123, isActive: true }]);
+
+    console.log('current value hold by behavior subject-> ', this.subject$.getValue());
   }
 }
 
-/** subject can behave as an observable but also can emit new data with subject$.next()
+/** behavior subject can behave as an observable but also can emit new data with subject$.next()
  * observable = stream of data and observer.next()
  *
+ * behavior subject can hold an value inside , default in this example is [], and we can check the current value at any time by using subject$.getValue()
  */
