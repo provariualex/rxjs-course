@@ -1,32 +1,20 @@
-import { Component, inject } from '@angular/core';
-import { RouterLink, RouterOutlet } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
-import {
-  catchError,
-  combineLatest,
-  debounce,
-  debounceTime,
-  distinct,
-  distinctUntilChanged,
-  distinctUntilKeyChanged,
-  forkJoin,
-  from,
-  interval,
-  Observable,
-  of,
-  tap,
-  throttleTime,
-  timer,
-  withLatestFrom,
-} from 'rxjs';
+import { Component } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+import { Subject } from 'rxjs';
 
-import { NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
 interface Comment {
   id: string;
   body: string;
   username: string;
+}
+
+interface User {
+  id: string;
+  name: string;
+  age: number;
+  isActive: boolean;
 }
 
 @Component({
@@ -36,10 +24,17 @@ interface Comment {
   styleUrl: './app.scss',
 })
 export class App {
-  interval$ = interval(1000).pipe(tap((value) => console.log(value)));
-  constructor() {}
+  subject$ = new Subject<User[]>();
+  constructor() {
+    this.subject$.subscribe((users) => {
+      console.log(users);
+    });
+
+    this.subject$.next([{ id: '1', name: 'MyUser', age: 123, isActive: true }]);
+  }
 }
 
-/** tap just check what happens does not affect the stream
- *  its ONLY USED FOR DEBUGGING
+/** subject can behave as an observable but also can emit new data with subject$.next()
+ * observable = stream of data and observer.next()
+ *
  */
