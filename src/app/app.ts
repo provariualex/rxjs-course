@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { BehaviorSubject, Subject } from 'rxjs';
 
 import { CommonModule } from '@angular/common';
+import { UsersService } from './users.service';
 
 interface Comment {
   id: string;
@@ -10,34 +11,27 @@ interface Comment {
   username: string;
 }
 
-interface User {
-  id: string;
-  name: string;
-  age: number;
-  isActive: boolean;
-}
-
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet, CommonModule],
+  providers: [UsersService],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })
 export class App {
-  subject$ = new BehaviorSubject<User[]>([]);
+  userService = inject(UsersService);
+  public subject$ = this.userService.getUsers();
+
   constructor() {
-    this.subject$.subscribe((users) => {
-      console.log(users);
-    });
+    this.userService.addUser({ id: '1', name: 'Test', age: 23, isActive: true });
 
-    this.subject$.next([{ id: '1', name: 'MyUser', age: 123, isActive: true }]);
+    console.log(this.subject$);
 
-    console.log('current value hold by behavior subject-> ', this.subject$.getValue());
+    this.userService.addUser({ id: '1', name: 'Test', age: 23, isActive: true });
+
+    console.log(this.subject$);
   }
 }
 
-/** behavior subject can behave as an observable but also can emit new data with subject$.next()
- * observable = stream of data and observer.next()
- *
- * behavior subject can hold an value inside , default in this example is [], and we can check the current value at any time by using subject$.getValue()
+/** user service with behavior subject
  */
