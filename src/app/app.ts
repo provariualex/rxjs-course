@@ -14,12 +14,14 @@ import {
   interval,
   Observable,
   of,
+  tap,
   throttleTime,
   timer,
   withLatestFrom,
 } from 'rxjs';
 
 import { NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 interface Comment {
   id: string;
@@ -29,28 +31,15 @@ interface Comment {
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, ReactiveFormsModule],
+  imports: [RouterOutlet, CommonModule],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })
 export class App {
-  formBuilder = inject(NonNullableFormBuilder);
-  searchForm = this.formBuilder.group({
-    searchValue: '',
-  });
-  onSearchSubmit() {
-    console.log('onSubmit');
-  }
-
-  constructor() {
-
-    this.searchForm
-      .get('searchValue')
-      ?.valueChanges.pipe(throttleTime(1000))
-      .subscribe((value) => console.log(value));
-  }
+  interval$ = interval(1000).pipe(tap((value) => console.log(value)));
+  constructor() {}
 }
 
-/** throttle will block any activity for a period of time
- *
- * if you for example set time for 2 seconds you can click a button to call an api once at 2 second at most*/
+/** tap just check what happens does not affect the stream
+ *  its ONLY USED FOR DEBUGGING
+ */
